@@ -94,6 +94,14 @@ describe("Tax", function () {
       await expect(contract.burn(excessiveBurnAmount)).to.be.revertedWithCustomError(contract,"ERC20InsufficientBalance");
   });
 
+  it("Should fail if has zero balance", async function () {
+    const { contract, owner, _feeRecipient } = await loadFixture(deployFixture);
+
+    const burnAmount = hre.ethers.parseUnits("1", 18);
+
+    await expect(contract.burn(burnAmount)).to.be.revertedWith("Insufficient Balance");
+  });
+
   });
 
 });
