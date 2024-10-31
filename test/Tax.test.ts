@@ -160,6 +160,16 @@ describe("Tax", function () {
     expect(contract.connect(_feeRecipient).transfer(owner, transferAmount)).to.be.revertedWithCustomError(contract, "ERC20InsufficientBalance");
   });
 
+  it("Should fail if the sender does not have enough balance", async function () {
+    const { contract, owner, _feeRecipient } = await loadFixture(deployFixture);
+
+    const transferAmount = hre.ethers.parseUnits("10000", 18);
+
+    await contract.mintTo(hre.ethers.parseUnits("10000", 18), owner.address);
+
+    expect(contract.transfer(_feeRecipient, transferAmount)).to.be.revertedWithCustomError(contract, "ERC20InsufficientBalance");
+  });
+
   });
 
 });
