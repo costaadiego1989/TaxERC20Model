@@ -38,7 +38,10 @@ describe("Tax", function () {
 
       await contract.mintTo(1000, owner);
 
+      const totalSupply = await contract.totalSupply();
+
       expect(await contract.balanceOf(owner)).to.equal(1000);
+      expect(totalSupply).to.equal(1000);
     });
 
     it("Should NOT mint if not owner", async function () {
@@ -47,6 +50,12 @@ describe("Tax", function () {
       const instance = contract.connect(_feeRecipient);
 
       expect(instance.mintTo(1000, owner)).to.revertedWithCustomError(contract, "ERC20InvalidReceiver");
+    });
+
+    it("Should NOT mint if amount is zero", async function () {
+      const { contract, owner, _feeRecipient } = await loadFixture(deployFixture);
+
+      expect(contract.mintTo(0, owner)).to.be.revertedWith("Invalid amount");
     });
 
   });
