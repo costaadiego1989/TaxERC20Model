@@ -27,5 +27,13 @@ describe("Tax", function () {
       
       expect(await contract.name()).to.equal(tokenName);
     });
+
+    it("Should be Symbol", async function () {
+      const { contract, owner, _feeRecipient } = await loadFixture(deployFixture);
+      
+      expect(await contract.symbol()).to.equal(tokenSymbol);
+    });
+
   });
+
 });
