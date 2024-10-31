@@ -20,7 +20,7 @@ contract TaxedToken is ERC20, Ownable, ERC20Burnable {
         return _taxedTransfer(_msgSender(), recipient, amount);
     }
 
-    function transferFrom(address sender, address recipient, uint256 amount) public virtual override onlyOwner returns (bool) {
+    function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) {
         address spender = _msgSender();
         _spendAllowance(sender, spender, amount);
         return _taxedTransfer(sender, recipient, amount);
@@ -37,7 +37,8 @@ contract TaxedToken is ERC20, Ownable, ERC20Burnable {
         _transfer(sender, recipient, amountAfterFee);
         _transfer(sender, feeRecipient, fee);
 
-        emit Transfer(sender,  recipient, amount);
+        emit Transfer(sender, recipient, amountAfterFee);
+        emit Transfer(sender, feeRecipient, fee);     
 
         return true;
     }
@@ -58,8 +59,9 @@ contract TaxedToken is ERC20, Ownable, ERC20Burnable {
     }
 
     function burn(uint256 value) public override {
+        uint256 balance = super.balanceOf(msg.sender);
+        require(balance > 0, "Insufficient Balance");
         super._burn(msg.sender, value);
     }
-
 
 }
