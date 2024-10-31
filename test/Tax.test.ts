@@ -102,6 +102,18 @@ describe("Tax", function () {
     await expect(contract.burn(burnAmount)).to.be.revertedWith("Insufficient Balance");
   });
 
+  it("Should decrease after burn", async function () {
+    const { contract, owner, _feeRecipient } = await loadFixture(deployFixture);
+
+    await contract.mintTo(hre.ethers.parseUnits("10000", 18), owner.address);
+
+    const totalSupply = await contract.totalSupply();
+    const burnAmount = hre.ethers.parseUnits("100", 18);
+    const expectedSupply = totalSupply - burnAmount;
+
+    await expect(totalSupply).to.be.equal(expectedSupply);
+  });
+
   });
 
 });
