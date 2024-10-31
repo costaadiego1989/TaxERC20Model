@@ -139,6 +139,17 @@ describe("Tax", function () {
     expect(expectedSupply).to.be.lt(totalSupply);
   });
 
+  it("Should NOT transfer (Auth)", async function () {
+    const { contract, owner, _feeRecipient } = await loadFixture(deployFixture);
+
+    await contract.mintTo(hre.ethers.parseUnits("10000", 18), owner.address);
+
+    const transferAmount = hre.ethers.parseUnits("100", 18);
+    const instance = contract.connect(_feeRecipient);
+
+    expect(instance.transfer(_feeRecipient, transferAmount)).to.be.revertedWithCustomError(contract, "ERC20InsufficientAllowance");
+  });
+
   });
 
 });
