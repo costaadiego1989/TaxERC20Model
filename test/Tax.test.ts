@@ -66,6 +66,18 @@ describe("Tax", function () {
       expect(contract.mintTo(1000, instance)).to.be.revertedWithCustomError(contract, "ERC20InvalidReceiver");
     });
 
+    it("Should burn", async function () {
+      const { contract, owner, _feeRecipient } = await loadFixture(deployFixture);
+
+      await contract.mintTo(1000, owner.address);
+
+      expect(await contract.balanceOf(owner.address)).to.equal(1000);
+  
+      await contract.burn(100);
+  
+      expect(await contract.balanceOf(owner.address)).to.equal(900);
+    });
+
   });
 
 });
