@@ -109,9 +109,12 @@ describe("Tax", function () {
 
     const totalSupply = await contract.totalSupply();
     const burnAmount = hre.ethers.parseUnits("100", 18);
+
+    await contract.burn(burnAmount);
+
     const expectedSupply = totalSupply - burnAmount;
 
-    await expect(totalSupply).to.be.equal(expectedSupply);
+    expect(await contract.totalSupply()).to.be.equal(expectedSupply);
   });
 
   });
