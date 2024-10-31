@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 
 contract TaxedToken is ERC20, Ownable, ERC20Burnable {
     address public feeRecipient;
-    uint256 public constant FEE_PERCENTAGE = 1;
+    uint256 private FEE_PERCENTAGE = 1;
     
     constructor(string memory name, string memory symbol, address _feeRecipient) 
         ERC20(name, symbol) 
@@ -43,7 +43,13 @@ contract TaxedToken is ERC20, Ownable, ERC20Burnable {
     }
 
     function setFeeRecipient(address newFeeRecipient) external onlyOwner {
+        require(newFeeRecipient != address(0), "Invalid Recipient");
         feeRecipient = newFeeRecipient;
+    }
+
+    function setFeePercentage(uint256 newFeePercentage) external onlyOwner {
+        require(newFeePercentage > 0, "Invalid Percentage");
+        FEE_PERCENTAGE = newFeePercentage;
     }
 
     function mintTo(uint256 amount, address recipient) external onlyOwner {
