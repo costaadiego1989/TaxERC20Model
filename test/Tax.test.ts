@@ -84,6 +84,16 @@ describe("Tax", function () {
       expect(contract.burn(100)).to.be.revertedWithCustomError(contract, "ERC20InsufficientBalance");
     });
 
+    it("Should fail if tries to burn more tokens than they have", async function () {
+      const { contract, owner, _feeRecipient } = await loadFixture(deployFixture);
+
+      await contract.mintTo(1000, owner.address);
+
+      const excessiveBurnAmount = hre.ethers.parseUnits("2000", 18);
+
+      await expect(contract.burn(excessiveBurnAmount)).to.be.revertedWithCustomError(contract,"ERC20InsufficientBalance");
+  });
+
   });
 
 });
