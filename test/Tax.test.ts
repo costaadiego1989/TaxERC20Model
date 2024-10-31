@@ -58,6 +58,14 @@ describe("Tax", function () {
       expect(contract.mintTo(0, owner)).to.be.revertedWith("Invalid amount");
     });
 
+    it("Should NOT mint if no recipient", async function () {
+      const { contract, owner, _feeRecipient } = await loadFixture(deployFixture);
+
+      const instance = "0x00000000";
+
+      expect(contract.mintTo(1000, instance)).to.be.revertedWithCustomError(contract, "ERC20InvalidReceiver");
+    });
+
   });
 
 });
