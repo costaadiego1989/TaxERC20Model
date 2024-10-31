@@ -44,9 +44,9 @@ describe("Tax", function () {
     it("Should NOT mint if not owner", async function () {
       const { contract, owner, _feeRecipient } = await loadFixture(deployFixture);
 
-      await contract.mintTo(1000, owner);
+      const instance = contract.connect(_feeRecipient);
 
-      expect(await contract.balanceOf(owner)).to.equal(1000);
+      expect(instance.mintTo(1000, owner)).to.revertedWithCustomError(contract, "ERC20InvalidReceiver");
     });
 
   });
