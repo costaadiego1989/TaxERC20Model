@@ -49,7 +49,7 @@ contract TaxedToken is ERC20, Ownable, ERC20Burnable {
     }
 
     function setFeePercentage(uint256 newFeePercentage) external onlyOwner {
-        require(newFeePercentage > 0, "Invalid Percentage");
+        require(newFeePercentage > 0 && newFeePercentage <= 10, "Invalid Percentage");
         FEE_PERCENTAGE = newFeePercentage;
     }
 
