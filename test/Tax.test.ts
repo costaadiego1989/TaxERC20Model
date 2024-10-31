@@ -7,21 +7,25 @@ import { expect } from "chai";
 import hre from "hardhat";
 
 describe("Tax", function () {
-  // Fixture para deploy do contrato
+
+  const tokenName = "TaxedToken";
+  const tokenSymbol = "TAX";
+
   async function deployFixture() {
-    const [owner, otherAccount] = await hre.ethers.getSigners();
+    const [owner, _feeRecipient] = await hre.ethers.getSigners();
 
     const Tax = await hre.ethers.getContractFactory("Tax");
-    const tax = await Tax.deploy();
+    const contract = await Tax.deploy(tokenName, tokenSymbol, _feeRecipient);
 
-    return { tax, owner, otherAccount };
+    return { contract, owner, _feeRecipient };
   }
 
-  describe("Deployment", function () {
-    it("Should deploy successfully", async function () {
-      const { tax, owner, otherAccount } = await loadFixture(deployFixture);
+  describe("Tax Tests", function () {
+
+    it("Should be Name", async function () {
+      const { contract, owner, _feeRecipient } = await loadFixture(deployFixture);
       
-      expect(await tax.owner()).to.equal(owner.address);
+      expect(await contract.name()).to.equal(tokenName);
     });
   });
 });

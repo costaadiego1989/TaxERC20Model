@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 
-contract TaxedToken is ERC20, Ownable, ERC20Burnable {
+contract Tax is ERC20, Ownable, ERC20Burnable {
     address public feeRecipient;
     uint256 private FEE_PERCENTAGE = 1;
     
