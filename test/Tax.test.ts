@@ -2,7 +2,6 @@ import {
   time,
   loadFixture,
 } from "@nomicfoundation/hardhat-toolbox/network-helpers";
-import { anyValue } from "@nomicfoundation/hardhat-chai-matchers/withArgs";
 import { expect } from "chai";
 import hre from "hardhat";
 
@@ -32,6 +31,22 @@ describe("Tax", function () {
       const { contract, owner, _feeRecipient } = await loadFixture(deployFixture);
       
       expect(await contract.symbol()).to.equal(tokenSymbol);
+    });
+    
+    it("Should mint", async function () {
+      const { contract, owner, _feeRecipient } = await loadFixture(deployFixture);
+
+      await contract.mintTo(1000, owner);
+
+      expect(await contract.balanceOf(owner)).to.equal(1000);
+    });
+
+    it("Should NOT mint if not owner", async function () {
+      const { contract, owner, _feeRecipient } = await loadFixture(deployFixture);
+
+      await contract.mintTo(1000, owner);
+
+      expect(await contract.balanceOf(owner)).to.equal(1000);
     });
 
   });
