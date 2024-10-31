@@ -117,6 +117,28 @@ describe("Tax", function () {
     expect(await contract.totalSupply()).to.be.equal(expectedSupply);
   });
 
+  it("Should transfer", async function () {
+    const { contract, owner, _feeRecipient } = await loadFixture(deployFixture);
+
+    await contract.mintTo(hre.ethers.parseUnits("10000", 18), owner.address);
+
+    const balanceOfRecipientBeforeWithdraw = await contract.balanceOf(_feeRecipient);
+    const balanceOfContractBeforeWithdraw = await contract.balanceOf(owner);
+    const transferAmount = hre.ethers.parseUnits("100", 18);
+
+    await contract.transfer(_feeRecipient, transferAmount);
+
+    const balanceOfRecipientAfterWithdraw = await contract.balanceOf(_feeRecipient);
+    const balanceOfContractAfterWithdraw = await contract.balanceOf(owner);
+
+    const totalSupply = await contract.totalSupply();
+    const expectedSupply = totalSupply - transferAmount;
+
+    expect(balanceOfContractAfterWithdraw).to.be.lessThan(balanceOfContractBeforeWithdraw);
+    expect(balanceOfRecipientAfterWithdraw).to.be.gt(balanceOfRecipientBeforeWithdraw);
+    expect(expectedSupply).to.be.lt(totalSupply);
+  });
+
   });
 
 });
