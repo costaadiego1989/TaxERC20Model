@@ -78,6 +78,12 @@ describe("Tax", function () {
       expect(await contract.balanceOf(owner.address)).to.equal(900);
     });
 
+    it("Should NOT burn if no Token", async function () {
+      const { contract, owner, _feeRecipient } = await loadFixture(deployFixture);
+    
+      expect(contract.burn(100)).to.be.revertedWithCustomError(contract, "ERC20InsufficientBalance");
+    });
+
   });
 
 });
