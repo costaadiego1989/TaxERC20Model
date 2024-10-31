@@ -53,7 +53,12 @@ contract TaxedToken is ERC20, Ownable, ERC20Burnable {
     }
 
     function mintTo(uint256 amount, address recipient) external onlyOwner {
+        require(amount > 0, "Invalid amount");
         _mint(recipient, amount);
+    }
+
+    function burn(uint256 value) public override {
+        super._burn(msg.sender, value);
     }
 
 
