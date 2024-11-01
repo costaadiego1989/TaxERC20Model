@@ -280,6 +280,52 @@ describe("Tax", function () {
         .withArgs(sender, _feeRecipient, expectedFee);
   });
 
+  it("Should set a valid fee percentage", async function () {
+    const { contract, owner } = await loadFixture(deployFixture);
+
+    const newFeePercentage = 5;
+
+    await contract.connect(owner).setFeePercentage(newFeePercentage);
+
+    expect(await contract.FEE_PERCENTAGE()).to.equal(newFeePercentage);
+});
+
+it("Should fail if a non owner tries to set the fee percentage", async function () {
+    const { contract, _feeRecipient } = await loadFixture(deployFixture);
+
+    const newFeePercentage = 3;
+
+    expect(contract.connect(_feeRecipient)
+      .setFeePercentage(newFeePercentage))
+      .to
+      .be
+      .revertedWithCustomError(contract, "OwnableInvalidOwner");
+  });
+
+it("Should fail if fee percentage is zero", async function () {
+    const { contract, owner } = await loadFixture(deployFixture);
+
+    const invalidFeePercentage = 0;
+
+    await expect(contract.connect(owner)
+      .setFeePercentage(invalidFeePercentage))
+      .to
+      .be
+      .revertedWith("Invalid Percentage");
+  });
+
+it("Should fail if fee percentage above 10", async function () {
+    const { contract, owner } = await loadFixture(deployFixture);
+
+    const invalidFeePercentage = 15;
+
+    await expect(contract.connect(owner)
+      .setFeePercentage(invalidFeePercentage))
+      .to
+      .be
+      .revertedWith("Invalid Percentage");
+  });
+
   });
 
 });

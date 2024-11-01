@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 
 contract Tax is ERC20, Ownable, ERC20Burnable {
     address public feeRecipient;
-    uint256 private FEE_PERCENTAGE = 1;
+    uint256 public FEE_PERCENTAGE = 1;
     
     constructor(string memory name, string memory symbol, address _feeRecipient) 
         ERC20(name, symbol) 
