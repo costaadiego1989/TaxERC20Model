@@ -175,8 +175,14 @@ describe("Tax", function () {
     const transferAmount = hre.ethers.parseUnits("100", 18);
 
     await expect(
-        contract.connect(owner).transfer(hre.ethers.ZeroAddress, transferAmount)
-    ).to.be.revertedWith("Invalid Recipient");
+        contract.transfer(hre.ethers.ZeroAddress, transferAmount)).to.be.revertedWith("Invalid Recipient");
+  });
+
+  it("Should fail if amount does not pay the fee", async function () {
+    const { contract, owner, _feeRecipient } = await loadFixture(deployFixture);
+    const transferAmount = hre.ethers.parseUnits("1", 18);
+
+    await expect(contract.transfer(_feeRecipient, transferAmount)).to.be.revertedWith("Insufficient amount");
   });
 
   });

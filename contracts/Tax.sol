@@ -17,6 +17,10 @@ contract Tax is ERC20, Ownable, ERC20Burnable {
     }
 
     function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
+        uint256 transferAmount = 1 ether;
+
+        require(amount > transferAmount, "Insufficient amount");
+
         return _taxedTransfer(_msgSender(), recipient, amount);
     }
 
