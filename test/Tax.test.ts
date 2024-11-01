@@ -11,12 +11,12 @@ describe("Tax", function () {
   const tokenSymbol = "TAX";
 
   async function deployFixture() {
-    const [owner, _feeRecipient] = await hre.ethers.getSigners();
+    const [owner, _feeRecipient, spender, sender] = await hre.ethers.getSigners();
 
     const Tax = await hre.ethers.getContractFactory("Tax");
     const contract = await Tax.deploy(tokenName, tokenSymbol, _feeRecipient);
 
-    return { contract, owner, _feeRecipient };
+    return { contract, owner, _feeRecipient, spender, sender };
   }
 
   describe("Tax Tests", function () {
@@ -174,15 +174,13 @@ describe("Tax", function () {
     const { contract, owner, _feeRecipient } = await loadFixture(deployFixture);
     const transferAmount = hre.ethers.parseUnits("100", 18);
 
-    await expect(
-        contract.transfer(hre.ethers.ZeroAddress, transferAmount)).to.be.revertedWith("Invalid Recipient");
+    await expect(contract.transfer(hre.ethers.ZeroAddress, transferAmount)).to.be.revertedWith("Invalid Recipient");
   });
 
   it("Should fail if amount does not pay the fee", async function () {
     const { contract, owner, _feeRecipient } = await loadFixture(deployFixture);
-    const transferAmount = hre.ethers.parseUnits("1", 18);
 
-    await expect(contract.transfer(_feeRecipient, transferAmount)).to.be.revertedWith("Insufficient amount");
+    await expect(contract.transfer(_feeRecipient, 0)).to.be.revertedWith("Insufficient amount");
   });
 
   it("Should set fee recipient", async function () {
@@ -204,6 +202,28 @@ describe("Tax", function () {
     const { contract, owner, _feeRecipient } = await loadFixture(deployFixture);
 
     await expect(contract.connect(_feeRecipient).setFeeRecipient(_feeRecipient)).to.be.revertedWithCustomError(contract, "OwnableUnauthorizedAccount");
+  });
+
+  it("Should transfer from", async function () {
+    const { contract, _feeRecipient, spender, sender } = await loadFixture(deployFixture);
+
+    const mintAmount = hre.ethers.parseUnits("10000", 18);
+    const transferAmount = hre.ethers.parseUnits("100", 18);
+
+    await contract.mintTo(mintAmount, sender);
+
+    await contract.connect(sender).approve(spender.address, transferAmount);
+
+    await contract.connect(spender).transferFrom(
+        sender.address,
+        _feeRecipient.address,
+        transferAmount
+    );
+
+    const expectedSenderBalance = mintAmount - transferAmount;
+
+    expect(await contract.balanceOf(sender.address)).to.equal(expectedSenderBalance);
+
   });
 
   });
