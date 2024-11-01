@@ -8,6 +8,9 @@ import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 contract Tax is ERC20, Ownable, ERC20Burnable {
     address public feeRecipient;
     uint256 public FEE_PERCENTAGE = 1;
+
+    event FeeRecipientUpdated(address indexed newFeeRecipient);
+    event FeePercentageUpdated(uint256 newFeePercentage);
     
     constructor(string memory name, string memory symbol, address _feeRecipient) 
         ERC20(name, symbol) 
@@ -48,11 +51,15 @@ contract Tax is ERC20, Ownable, ERC20Burnable {
     function setFeeRecipient(address newFeeRecipient) external onlyOwner {
         require(newFeeRecipient != address(0), "Invalid Recipient");
         feeRecipient = newFeeRecipient;
+
+        emit FeeRecipientUpdated(newFeeRecipient);
     }
 
     function setFeePercentage(uint256 newFeePercentage) external onlyOwner {
         require(newFeePercentage > 0 && newFeePercentage <= 10, "Invalid Percentage");
         FEE_PERCENTAGE = newFeePercentage;
+
+        emit FeePercentageUpdated(newFeePercentage);
     }
 
     function mintTo(uint256 amount, address recipient) external onlyOwner {
@@ -61,8 +68,6 @@ contract Tax is ERC20, Ownable, ERC20Burnable {
     }
 
     function burn(uint256 value) public override {
-        uint256 balance = super.balanceOf(msg.sender);
-        require(balance > 0, "Insufficient Balance");
         super._burn(msg.sender, value);
     }
 
