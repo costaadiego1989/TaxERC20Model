@@ -237,7 +237,7 @@ describe("Tax", function () {
       .revertedWithCustomError(contract, "ERC20InsufficientAllowance")
   });
 
-  it("Should fail if sender does not have enough balance", async function () {
+  it("Should fail if sender does not have balance", async function () {
     const { contract, owner, sender, spender } = await loadFixture(deployFixture);
 
     const mintAmount = hre.ethers.parseUnits("1000", 18);
@@ -251,6 +251,16 @@ describe("Tax", function () {
         .to
         .be
         .revertedWithCustomError(contract, "ERC20InsufficientAllowance");
+  });
+
+  it("Should fail if transferring to address(0)", async function () {
+    const { contract, owner, _feeRecipient } = await loadFixture(deployFixture);
+    const transferAmount = hre.ethers.parseUnits("100", 18);
+
+    await expect(contract.transferFrom(owner, hre.ethers.ZeroAddress, transferAmount))
+      .to
+      .be
+      .revertedWithCustomError(contract, "ERC20InsufficientAllowance");
   });
 
   });
