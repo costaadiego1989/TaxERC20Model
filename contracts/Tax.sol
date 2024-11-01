@@ -63,8 +63,4 @@ contract Tax is ERC20, Ownable, ERC20Burnable {
         _mint(recipient, amount);
     }
 
-    function burn(uint256 value) public override {
-        super._burn(msg.sender, value);
-    }
-
 }
