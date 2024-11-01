@@ -263,6 +263,23 @@ describe("Tax", function () {
       .revertedWithCustomError(contract, "ERC20InsufficientAllowance");
   });
 
+  it("Should emit two Transfer events: one for recipient and one for feeRecipient", async function () {
+    const { contract, owner, sender, spender, _feeRecipient } = await loadFixture(deployFixture);
+
+    const mintAmount = hre.ethers.parseUnits("10000", 18);
+    const transferAmount = hre.ethers.parseUnits("100", 18);
+    const expectedFee = hre.ethers.parseUnits("1", 18);
+
+    await contract.mintTo(mintAmount, owner);
+    await contract.approve(spender, transferAmount);
+
+    expect(contract.connect(spender).transferFrom(sender, _feeRecipient, transferAmount))
+        .to.emit(contract, "Transfer")
+        .withArgs(sender.address, _feeRecipient, (transferAmount - expectedFee))
+        .and.to.emit(contract, "Transfer")
+        .withArgs(sender, _feeRecipient, expectedFee);
+  });
+
   });
 
 });
