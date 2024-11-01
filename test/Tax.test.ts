@@ -200,6 +200,12 @@ describe("Tax", function () {
     expect(contract.setFeeRecipient(hre.ethers.ZeroAddress)).to.be.revertedWith("Invalid Recipient");
   });
 
+  it("Should fail if non owner tries to set the fee recipient", async function () {
+    const { contract, owner, _feeRecipient } = await loadFixture(deployFixture);
+
+    await expect(contract.connect(_feeRecipient).setFeeRecipient(_feeRecipient)).to.be.revertedWithCustomError(contract, "OwnableUnauthorizedAccount");
+  });
+
   });
 
 });
