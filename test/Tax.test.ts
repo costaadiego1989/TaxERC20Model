@@ -194,6 +194,12 @@ describe("Tax", function () {
     expect(getFeeRecipient).to.equal(_feeRecipient);
   });
 
+  it("Should fail to set zero address recipient", async function () {
+    const { contract, owner, _feeRecipient } = await loadFixture(deployFixture);
+
+    expect(contract.setFeeRecipient(hre.ethers.ZeroAddress)).to.be.revertedWith("Invalid Recipient");
+  });
+
   });
 
 });
