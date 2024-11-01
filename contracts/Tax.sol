@@ -4,8 +4,12 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+import "prb-math/contracts/PRBMathUD60x18.sol";
 
 contract Tax is ERC20, Ownable, ERC20Burnable {
+
+    using PRBMathUD60x18 for uint256;
+
     address public feeRecipient;
     uint256 public FEE_PERCENTAGE = 1;
 
@@ -35,7 +39,7 @@ contract Tax is ERC20, Ownable, ERC20Burnable {
         require(recipient != address(0), "Invalid Recipient");
         require(amount > 0, "Insufficient amount");
 
-        uint256 fee = (amount * FEE_PERCENTAGE) / 100;
+        uint256 fee = amount.mul(FEE_PERCENTAGE).div(1e18);
         uint256 amountAfterFee = amount - fee;
 
         _transfer(sender, recipient, amountAfterFee);
