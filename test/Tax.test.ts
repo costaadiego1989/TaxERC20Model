@@ -185,6 +185,15 @@ describe("Tax", function () {
     await expect(contract.transfer(_feeRecipient, transferAmount)).to.be.revertedWith("Insufficient amount");
   });
 
+  it("Should set fee recipient", async function () {
+    const { contract, owner, _feeRecipient } = await loadFixture(deployFixture);
+
+    await contract.setFeeRecipient(_feeRecipient);
+    const getFeeRecipient = await contract.feeRecipient();
+
+    expect(getFeeRecipient).to.equal(_feeRecipient);
+  });
+
   });
 
 });
