@@ -223,7 +223,18 @@ describe("Tax", function () {
     const expectedSenderBalance = mintAmount - transferAmount;
 
     expect(await contract.balanceOf(sender.address)).to.equal(expectedSenderBalance);
+  });
 
+  it("Should fail if spender does not have allowance", async function () {
+    const { contract, owner, _feeRecipient, sender } = await loadFixture(deployFixture);
+
+    const transferAmount = hre.ethers.parseUnits("2000", 18);
+
+    await expect(contract.connect(sender)
+      .transferFrom(sender, _feeRecipient, transferAmount))
+      .to
+      .be
+      .revertedWithCustomError(contract, "ERC20InsufficientAllowance")
   });
 
   });
