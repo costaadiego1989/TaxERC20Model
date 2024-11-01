@@ -13,6 +13,7 @@ contract Tax is ERC20, Ownable, ERC20Burnable {
         ERC20(name, symbol) 
         Ownable(msg.sender)
     {
+        require(_feeRecipient != address(0), "Invalid fee recipient");
         feeRecipient = _feeRecipient;
     }
 
