@@ -26,12 +26,8 @@ contract Tax is ERC20, Ownable, ERC20Burnable {
 
     function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) {
         address spender = _msgSender();
-        spendAllowance(sender, spender, amount);
+        _spendAllowance(sender, spender, amount);
         return _taxedTransfer(sender, recipient, amount);
-    }
-
-    function spendAllowance(address sender, address spender, uint256 amount) public {
-        return super._spendAllowance(sender, spender, amount);
     }
 
     function _taxedTransfer(address sender, address recipient, uint256 amount) internal virtual returns (bool) {

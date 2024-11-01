@@ -99,7 +99,10 @@ describe("Tax", function () {
 
     const burnAmount = hre.ethers.parseUnits("1", 18);
 
-    await expect(contract.burn(burnAmount)).to.be.revertedWith("Insufficient Balance");
+    await expect(contract.burn(burnAmount))
+      .to
+      .be
+      .revertedWithCustomError(contract, "ERC20InsufficientBalance");
   });
 
   it("Should decrease after burn", async function () {
